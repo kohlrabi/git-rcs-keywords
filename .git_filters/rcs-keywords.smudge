@@ -36,6 +36,13 @@ $rev =~ /^Date:\s*(.*)\s*$/m;
 $date = $1;
 $rev =~ /^\s*git-svn-id:[^@]*@(\d+).*$/m;
 $ident = $1;
+# try to find the latest rev keyword
+$i = 2;
+while (not $rev =~ /^\s*git-svn-id:[^@]*@(\d+).*$/m) {
+    $ident = $1;
+    $rev = `git log -n $i -- $path`;
+    $i++;
+}
 
 while (<STDIN>) {
     s/\$Date[^\$]*\$/\$Date:   $date \$/;
